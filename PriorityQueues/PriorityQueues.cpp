@@ -3,6 +3,12 @@
 #include "Qp3.h"
 using namespace std;
 
+void swap(Qp3& q1, Qp3& q2) {
+	Qp3 tmp(std::move(q1));
+	q1 = std::move(q2);
+	q2 = std::move(tmp);
+}
+
 int main()
 {
 	setlocale(LC_ALL, "russian");
@@ -16,6 +22,10 @@ int main()
 	
 	//Qp3 q2(*q); // вызов копирующего конструктора	
 	//Qp3 q2(move(*q)); // вызов перемещающего конструктора
+
+	Qp3* q3 = new Qp3(); 
+	q3->push(10, Priority::low);		
+	swap(q, q3); //проверка семантики перемещения	
 
 	//q2.remove_front_element();	
 	//cout << "q: " << q->get_front_element_info() << endl;

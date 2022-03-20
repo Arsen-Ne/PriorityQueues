@@ -26,6 +26,8 @@ private:
 	void set_front(Node*& p);
 	void clone(const Qp3& q);
 	void erase();
+	void move(Node*&, Node*&);
+	void move(Qp3&& q);
 
 public:
 	Qp3() : front(nullptr), rear_high(nullptr), rear_medium(nullptr), rear_low(nullptr) {}
@@ -38,11 +40,11 @@ public:
 	Qp3(Qp3&& q) noexcept;
 	Qp3& operator = (Qp3&& q) noexcept;
 
-	bool is_empty();
-	int get_size();
-	int get_size_with_priority(Priority _priority);
+	bool is_empty() const;
+	int get_size() const;
+	int get_size_with_priority(Priority _priority) const;
 	void push(int _val, Priority _priority);
 	bool remove_front_element();
-	string get_front_element_info();	
+	string get_front_element_info() const;
 };
 

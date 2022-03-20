@@ -1,7 +1,7 @@
 #include "Qp3.h"
 #include <string>
 #include <iostream>
-using namespace std;
+//using namespace std;
 
 string priorityToStr(Priority priority) {
 	switch (priority) {
@@ -30,6 +30,29 @@ void Qp3::clone(const Qp3& q) {
 	}
 }
 
+void Qp3::move(Node*& a, Node*& b)
+{
+	a = b;
+	b = nullptr;
+}
+
+void Qp3::move(Qp3&& q)
+{
+	move(front, q.front);
+	move(rear_high, q.rear_high);
+	move(rear_medium, q.rear_medium);
+	move(rear_low, q.rear_low);
+
+	size = q.size;
+	size_high = q.size_high;
+	size_medium = q.size_medium;
+	size_low = q.size_low;	
+	q.size = 0;
+	q.size_high = 0;
+	q.size_medium = 0;
+	q.size_low = 0;
+}
+
 void Qp3::erase() {
 	while (remove_front_element());
 }
@@ -52,7 +75,7 @@ Qp3& Qp3::operator = (const Qp3& q) {
 
 // move constructor
 Qp3::Qp3(Qp3&& q) noexcept : front(nullptr), rear_high(nullptr), rear_medium(nullptr), rear_low(nullptr) {
-	*this = move(q); // calls move assignment operator
+	*this = std::move(q); // calls move assignment operator
 }
 
 // move assignment operator
@@ -60,36 +83,19 @@ Qp3& Qp3::operator = (Qp3&& q) noexcept {
 	if (&q == this)
 		return *this; // проверка на самоприсваивание 
 	erase();
-
-	front = q.front;
-	rear_high = q.rear_high;
-	rear_medium = q.rear_medium;
-	rear_low = q.rear_low;
-	size = q.size;
-	size_high = q.size_high;
-	size_medium = q.size_medium;
-	size_low = q.size_low;
-
-	q.front = nullptr;
-	q.rear_high = nullptr;
-	q.rear_medium = nullptr;
-	q.rear_low = nullptr;
-	q.size = 0;
-	q.size_high = 0;
-	q.size_medium = 0;
-	q.size_low = 0;
+	this->move(std::move(q));
 	return *this;
 }
 
-bool Qp3::is_empty() {
+bool Qp3::is_empty() const {
 	return front == nullptr;
 }
 
-int Qp3::get_size() {
+int Qp3::get_size() const {	
 	return size;
 }
 
-int Qp3::get_size_with_priority(Priority _priority) {
+int Qp3::get_size_with_priority(Priority _priority) const {
 	switch (_priority) {
 	case Priority::high: return	size_high;
 	case Priority::medium: return size_medium;
@@ -170,7 +176,7 @@ bool Qp3::remove_front_element() {
 	return false;
 }
 
-string Qp3::get_front_element_info() {
+string Qp3::get_front_element_info() const {
 	if (!is_empty()) {
 		return "value: " + to_string(front->val) + ", priority: " + priorityToStr(front->priority);
 	}
